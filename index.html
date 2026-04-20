@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Strangers Chat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { 
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe); 
+    }
+    .chat-bubble { 
+      background: rgba(255,255,255,0.85); 
+    }
+  </style>
+</head>
+<body class="min-h-screen font-sans">
+
+  <!-- Top Bar -->
+  <div class="bg-white shadow-sm border-b">
+    <div class="max-w-2xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <div class="text-2xl">💬</div>
+        <h1 class="text-2xl font-bold text-gray-800">Strangers Chat</h1>
+      </div>
+      <div id="online" class="flex items-center gap-2 bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-medium">
+        <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+        <span id="count">428</span> online right now
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-2xl mx-auto px-4 py-8">
+    <h2 class="text-4xl font-bold text-center text-gray-900 mb-2">Connect with Strangers</h2>
+    <p class="text-center text-xl text-gray-600 mb-2">Real anonymous chats happening right now 🔥</p>
+    <p class="text-center text-gray-500 mb-8">No registration • 100% Anonymous • Safe & Moderated</p>
+
+    <!-- Chat Rooms -->
+    <div class="bg-white rounded-3xl shadow p-6 mb-6 chat-bubble">
+      <div class="flex items-center gap-4 mb-4">
+        <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-3xl">👥</div>
+        <div>
+          <h3 class="text-2xl font-semibold">Chat Rooms</h3>
+          <p class="text-gray-600">Join public rooms or create your own. Talk to multiple people at once.</p>
+        </div>
+      </div>
+      <button onclick="alert('Chat Room mein welcome! (Abhi demo hai)')" 
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl text-lg transition-all">
+        Enter Chat Room
+      </button>
+    </div>
+
+    <!-- Random Chat -->
+    <div class="bg-white rounded-3xl shadow p-6 chat-bubble">
+      <div class="flex items-center gap-4 mb-4">
+        <div class="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center text-3xl">⚡</div>
+        <div>
+          <h3 class="text-2xl font-semibold">Random Chat</h3>
+          <p class="text-gray-600">Get instantly matched with a random stranger for one-on-one chat.</p>
+        </div>
+      </div>
+      <button onclick="alert('Random stranger se matching ho rahi hai... (Demo)')" 
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl text-lg transition-all">
+        Start Random Chat
+      </button>
+    </div>
+
+    <div class="text-center text-xs text-gray-500 mt-12">
+      © 2026 Strangers Chat • Safe & Moderated • Report abuse if needed
+    </div>
+  </div>
+
+  <script>
+    let count = 428;
+    const countEl = document.getElementById('count');
+
+    function updateCounter() {
+      const change = Math.floor(Math.random() * 11) + 3;
+      count += change;
+      if (count > 1350) count = 650;
+      countEl.textContent = count;
+    }
+
+    setInterval(updateCounter, 4500);
+    setTimeout(updateCounter, 2500);
+  </script>
+</body>
+</html>
