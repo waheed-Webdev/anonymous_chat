@@ -1,17 +1,77 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>About Us - Anonymous Chat</title>
-    <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: auto; text-align: center; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About SafeChat - Global Stranger Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>About Our Platform</h1>
-    <p>Hamari website ka maqsad logon ko ek safe aur anonymous environment dena hai jahan wo strangers se baat kar sakein aur naye dost bana sakein.</p>
-    <p>Humne isay simple aur fast banaya hai takay aap bina kisi login ke chatting shuru kar sakein.</p>
-    <p>Developed by: <strong>Waheed-Webdev</strong></p>
-    <p><a href="index.html">Back to Home</a></p>
+<body class="bg-slate-50 p-4 md:p-10 font-sans text-gray-800">
+
+    <div class="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden">
+        <div class="bg-blue-600 p-8 text-white text-center">
+            <i class="fas fa-rocket text-4xl mb-4"></i>
+            <h1 class="text-3xl font-black uppercase tracking-tight">Our Mission</h1>
+            <p class="opacity-80 text-sm">Connecting the world, one stranger at a time.</p>
+        </div>
+
+        <div class="p-8 space-y-8">
+            <section>
+                <h2 class="text-xl font-bold text-blue-600 mb-3 flex items-center gap-2">
+                    <i class="fas fa-question-circle"></i> What is SafeChat?
+                </h2>
+                <p class="text-gray-600 leading-relaxed">
+                    SafeChat ek aisi platform hai jahan aap duniya bhar ke anjaan logon (strangers) se bina kisi registration ya login ke baatein kar sakte hain. Humne ise isliye banaya hai taaki log khul kar apne dil ki baat kar sakein, naye dost bana sakein, aur mukhtalif cultures ke baare mein jaan sakein—wo bhi apni privacy ko khatre mein daale bina.
+                </p>
+            </section>
+
+            <section class="grid md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 p-4 rounded-2xl">
+                    <h3 class="font-bold text-blue-700 flex items-center gap-2">
+                        <i class="fas fa-user-secret"></i> 100% Anonymous
+                    </h3>
+                    <p class="text-xs text-gray-500 mt-2">Aapka asli naam, IP address ya email kabhi bhi kisi ko nahi dikhaya jata.</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-2xl">
+                    <h3 class="font-bold text-green-700 flex items-center gap-2">
+                        <i class="fas fa-bolt"></i> No Logs
+                    </h3>
+                    <p class="text-xs text-gray-500 mt-2">Hum chat history save nahi karte. Browser band karte hi messages delete ho jate hain.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-xl font-bold text-blue-600 mb-3">Why SafeChat?</h2>
+                <p class="text-gray-600 mb-4">Duniya mein hazaron chat sites hain, lekin SafeChat par hamara focus 3 cheezon par hai:</p>
+                <ul class="space-y-3">
+                    <li class="flex items-center gap-3 text-sm">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                        <span><strong>Simplicity:</strong> Bas enter kijiye aur chatting shuru kijiye.</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-sm">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                        <span><strong>Safety Filters:</strong> Hamara AI system personal info share hone se rokta hai.</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-sm">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                        <span><strong>Free Forever:</strong> Ye site hamesha free rahegi bina kisi hidden charge ke.</span>
+                    </li>
+                </ul>
+            </section>
+
+            <hr class="border-gray-100">
+
+            <div class="text-center">
+                <p class="text-xs text-gray-400 mb-4">Ready to find someone interesting to talk to?</p>
+                <button onclick="location.href='index.html'" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-blue-700 transition">
+                    Let's Chat Now!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <p class="text-center mt-6 text-[10px] text-gray-400 uppercase tracking-widest font-bold">Made for humans, not bots.</p>
+
 </body>
 </html>
