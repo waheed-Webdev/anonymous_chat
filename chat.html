@@ -3,31 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anonymous Chat - Live</title>
+    <title>Secure Strangers Chat</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .theme-blue { --bg: #f0f9ff; --primary: #2563eb; --header: #1e40af; }
+        .theme-dark { --bg: #111827; --primary: #374151; --header: #030712; }
+        .theme-pink { --bg: #fff1f2; --primary: #db2777; --header: #9d174d; }
+        .theme-green { --bg: #f0fdf4; --primary: #16a34a; --header: #14532d; }
+        body { background-color: var(--bg); transition: 0.3s; }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); }
+    </style>
 </head>
-<body class="bg-gray-100 h-screen flex flex-col">
-    <div class="bg-blue-600 p-4 shadow-md text-center font-bold text-white flex justify-between items-center">
-        <span>Global Chat Room</span>
-        <button onclick="location.href='index.html'" class="text-xs bg-blue-700 px-3 py-1 rounded-full border border-white">Exit</button>
+<body id="main-body" class="theme-blue h-screen flex flex-col font-sans">
+
+    <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border-4 border-blue-500">
+            <h2 class="text-2xl font-black text-gray-800 mb-2 text-center uppercase tracking-wider">Join Chat</h2>
+            <p class="text-xs text-gray-500 text-center mb-6">Your data is encrypted & safe.</p>
+            
+            <div class="space-y-4">
+                <input id="user-name" type="text" placeholder="Nickname" class="w-full border-2 rounded-xl p-3 outline-none focus:border-blue-500">
+                
+                <div class="flex gap-2">
+                    <input id="user-location" type="text" placeholder="State/Country" class="flex-1 border-2 rounded-xl p-3 outline-none">
+                    <select id="user-gender" class="border-2 rounded-xl p-3 outline-none bg-white">
+                        <option value="♂️">Male</option>
+                        <option value="♀️">Female</option>
+                        <option value="🌈">Other</option>
+                    </select>
+                </div>
+
+                <label class="flex items-center gap-2 text-sm text-gray-700 font-medium">
+                    <input type="checkbox" id="age-check" class="w-5 h-5 accent-blue-600"> I am 18+ & will stay safe.
+                </label>
+                
+                <button onclick="startChat()" class="w-full bg-blue-600 text-white font-black py-4 rounded-xl hover:scale-105 transition-transform shadow-lg">ENTER ROOM</button>
+            </div>
+        </div>
     </div>
 
-    <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-3 flex flex-col">
+    <div id="header-bg" class="p-4 text-white flex flex-col gap-3 shadow-lg transition-colors" style="background-color: var(--header);">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="font-bold text-xl flex items-center gap-2">🛡️ SafeChat <span id="online-tag" class="text-[10px] bg-green-500 px-2 py-0.5 rounded-full animate-pulse">LIVE</span></h1>
+                <p id="profile-info" class="text-[10px] opacity-80"></p>
+            </div>
+            <button onclick="location.href='index.html'" class="text-xs bg-white/20 px-3 py-1 rounded-lg">Exit</button>
         </div>
+        
+        <div class="flex gap-4 justify-center bg-black/20 p-2 rounded-xl">
+            <button onclick="changeTheme('theme-blue')" class="w-6 h-6 rounded-full bg-blue-500 border-2 border-white"></button>
+            <button onclick="changeTheme('theme-dark')" class="w-6 h-6 rounded-full bg-gray-800 border-2 border-white"></button>
+            <button onclick="changeTheme('theme-pink')" class="w-6 h-6 rounded-full bg-pink-500 border-2 border-white"></button>
+            <button onclick="changeTheme('theme-green')" class="w-6 h-6 rounded-full bg-green-500 border-2 border-white"></button>
+        </div>
+    </div>
 
-    <div class="bg-white p-4 border-t flex gap-2 shadow-inner">
-        <input id="message-input" type="text" placeholder="Apna message likhein..." 
-               class="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:border-blue-500 text-sm">
-        <button id="send-btn" class="bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition">
-            Send
-        </button>
+    <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+
+    <div class="p-4 glass border-t-2 border-gray-200">
+        <div id="safety-alert" class="hidden bg-orange-100 text-orange-700 text-[10px] p-2 rounded-lg mb-2 border border-orange-200 font-bold">
+            🚫 SAFETY ALERT: Sharing phone numbers or emails is strictly prohibited!
+        </div>
+        <div class="flex gap-2">
+            <input id="msg-input" type="text" placeholder="Type a message..." class="flex-1 border-2 rounded-full px-5 py-3 outline-none focus:border-blue-500 shadow-sm">
+            <button id="send-btn" class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+            </button>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // Aapka Official Firebase Config (From Screenshot)
         const firebaseConfig = {
             apiKey: "AIzaSyB4G0ulOFI_WUSNIFim1PT7xU11vf4yF7g",
             authDomain: "anonymous-chat-7d857.firebaseapp.com",
@@ -39,36 +88,77 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const chatBox = document.getElementById('chat-box');
-        const msgInput = document.getElementById('message-input');
-        const sendBtn = document.getElementById('send-btn');
+        let user = { name: "", loc: "", gen: "" };
+        let blocked = JSON.parse(localStorage.getItem('blocked') || "[]");
 
-        async function sendMessage() {
-            const text = msgInput.value.trim();
-            if (text !== "") {
+        window.changeTheme = (cls) => {
+            document.getElementById('main-body').className = cls;
+        };
+
+        window.startChat = () => {
+            const n = document.getElementById('user-name').value.trim();
+            const l = document.getElementById('user-location').value.trim();
+            const g = document.getElementById('user-gender').value;
+            const a = document.getElementById('age-check').checked;
+
+            if(!n || !l || !a) return alert("Please fill all details!");
+            user = { name: n, loc: l, gen: g };
+            document.getElementById('login-modal').classList.add('hidden');
+            document.getElementById('profile-info').textContent = `${g} ${n} | 📍 ${l}`;
+        };
+
+        async function send() {
+            const input = document.getElementById('msg-input');
+            const txt = input.value.trim();
+            const alertBox = document.getElementById('safety-alert');
+            
+            // Security Filter (Phone, Email, etc.)
+            if(/(\d{8}|@|\.com|\.in|91\d|0\d)/.test(txt)) {
+                alertBox.classList.remove('hidden');
+                return setTimeout(() => alertBox.classList.add('hidden'), 3000);
+            }
+
+            if(txt) {
                 await addDoc(collection(db, "messages"), {
-                    content: text,
-                    timestamp: serverTimestamp()
+                    n: user.name, l: user.loc, g: user.gen, c: txt, t: serverTimestamp()
                 });
-                msgInput.value = "";
+                input.value = "";
             }
         }
 
-        sendBtn.onclick = sendMessage;
-        msgInput.addEventListener("keypress", (e) => { if(e.key === "Enter") sendMessage(); });
-
-        const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
-        onSnapshot(q, (snapshot) => {
-            chatBox.innerHTML = "";
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                const msgDiv = document.createElement('div');
-                msgDiv.className = "bg-white text-gray-800 p-3 rounded-2xl rounded-tl-none max-w-[85%] w-fit shadow-sm border border-gray-200 self-start";
-                msgDiv.textContent = data.content;
-                chatBox.appendChild(msgDiv);
+        document.getElementById('send-btn').onclick = send;
+        const q = query(collection(db, "messages"), orderBy("t", "asc"));
+        onSnapshot(q, (snap) => {
+            const box = document.getElementById('chat-box');
+            box.innerHTML = "";
+            snap.forEach(d => {
+                const data = d.data();
+                if(blocked.includes(data.n)) return;
+                
+                const m = document.createElement('div');
+                m.className = "flex flex-col gap-1 max-w-[85%]";
+                m.innerHTML = `
+                    <div class="flex items-center gap-2 px-2">
+                        <span class="text-[9px] font-bold text-gray-500 uppercase">${data.g} ${data.n} • ${data.l}</span>
+                        <button onclick="block('${data.n}')" class="text-[8px] text-red-400 font-bold">BLOCK</button>
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 text-sm text-gray-800">
+                        ${data.c}
+                    </div>
+                `;
+                box.appendChild(m);
             });
-            chatBox.scrollTop = chatBox.scrollHeight;
+            box.scrollTop = box.scrollHeight;
         });
+
+        window.block = (n) => {
+            if(n === user.name) return;
+            if(confirm(`Block ${n}?`)) {
+                blocked.push(n);
+                localStorage.setItem('blocked', JSON.stringify(blocked));
+                location.reload();
+            }
+        };
     </script>
 </body>
 </html>
