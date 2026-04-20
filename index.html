@@ -1,95 +1,80 @@
 <!DOCTYPE html>
-<html lang="hi">
-<head><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8115307780459070"
-     crossorigin="anonymous"></script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Strangers Chat</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { 
-      background: linear-gradient(135deg, #f0f9ff, #e0f2fe); 
-    }
-    .chat-bubble { 
-      background: rgba(255,255,255,0.85); 
-    }
-  </style>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeChat - Anonymous Strangers Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; }
+        .hero-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+        .btn-gradient { background: linear-gradient(90deg, #2563eb, #3b82f6); transition: all 0.3s ease; }
+        .btn-gradient:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3); }
+    </style>
 </head>
-<body class="min-h-screen font-sans">
+<body class="flex flex-col items-center justify-center p-4">
 
-  <!-- Top Bar -->
-  <div class="bg-white shadow-sm border-b">
-    <div class="max-w-2xl mx-auto px-4 py-3 flex justify-between items-center">
-      <div class="flex items-center gap-2">
-        <div class="text-2xl">💬</div>
-        <h1 class="text-2xl font-bold text-gray-800">Strangers Chat</h1>
-      </div>
-      <div id="online" class="flex items-center gap-2 bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-medium">
-        <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-        <span id="count">428</span> online right now
-      </div>
-    </div>
-  </div>
-
-  <div class="max-w-2xl mx-auto px-4 py-8">
-    <h2 class="text-4xl font-bold text-center text-gray-900 mb-2">Connect with Strangers</h2>
-    <p class="text-center text-xl text-gray-600 mb-2">Real anonymous chats happening right now 🔥</p>
-    <p class="text-center text-gray-500 mb-8">No registration • 100% Anonymous • Safe & Moderated</p>
-
-    <!-- Chat Rooms -->
-    <div class="bg-white rounded-3xl shadow p-6 mb-6 chat-bubble">
-      <div class="flex items-center gap-4 mb-4">
-        <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-3xl">👥</div>
-        <div>
-          <h3 class="text-2xl font-semibold">Chat Rooms</h3>
-          <p class="text-gray-600">Join public rooms or create your own. Talk to multiple people at once.</p>
+    <div class="max-w-md w-full hero-card p-8 text-center border border-white">
+        
+        <div class="mb-6">
+            <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-200">
+                <i class="fas fa-comments text-white text-3xl"></i>
+            </div>
+            <h1 class="text-3xl font-black text-gray-800 tracking-tight">SafeChat</h1>
+            <p class="text-blue-600 font-bold text-sm uppercase tracking-widest mt-1">Strangers Online</p>
         </div>
-      </div>
-      <button onclick="location.href='chat.html'"
-              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl text-lg transition-all">
-        Enter Chat Room
-      </button>
-    </div>
 
-    <!-- Random Chat -->
-    <div class="bg-white rounded-3xl shadow p-6 chat-bubble">
-      <div class="flex items-center gap-4 mb-4">
-        <div class="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center text-3xl">⚡</div>
-        <div>
-          <h3 class="text-2xl font-semibold">Random Chat</h3>
-          <p class="text-gray-600">Get instantly matched with a random stranger for one-on-one chat.</p>
+        <p class="text-gray-600 text-sm mb-8 px-4">Chat with random people worldwide instantly. No registration, no logs, just pure fun.</p>
+
+        <button onclick="location.href='chat.html'" class="btn-gradient text-white font-black py-4 px-10 rounded-2xl text-lg mb-10 w-full md:w-auto">
+            START CHATTING <i class="fas fa-arrow-right ml-2 text-sm"></i>
+        </button>
+
+        <div class="text-left space-y-4 border-t border-gray-200 pt-8">
+            <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Safety Guidelines:</h3>
+            
+            <div class="flex items-start gap-4">
+                <div class="text-blue-500 mt-1"><i class="fas fa-shield-halved"></i></div>
+                <div>
+                    <h4 class="text-sm font-bold text-gray-700 leading-none">100% Anonymous</h4>
+                    <p class="text-[11px] text-gray-500 mt-1">Your identity is hidden. We don't store your personal data.</p>
+                </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+                <div class="text-red-500 mt-1"><i class="fas fa-user-secret"></i></div>
+                <div>
+                    <h4 class="text-sm font-bold text-gray-700 leading-none">Privacy First</h4>
+                    <p class="text-[11px] text-gray-500 mt-1">Never share your phone number, email, or address with strangers.</p>
+                </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+                <div class="text-green-500 mt-1"><i class="fas fa-ban"></i></div>
+                <div>
+                    <h4 class="text-sm font-bold text-gray-700 leading-none">Smart Blocking</h4>
+                    <p class="text-[11px] text-gray-500 mt-1">Instantly block users who misbehave or make you feel unsafe.</p>
+                </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+                <div class="text-yellow-500 mt-1"><i class="fas fa-check-circle"></i></div>
+                <div>
+                    <h4 class="text-sm font-bold text-gray-700 leading-none">Ages 18+ Only</h4>
+                    <p class="text-[11px] text-gray-500 mt-1">By entering, you confirm you are an adult and agree to our rules.</p>
+                </div>
+            </div>
         </div>
-      </div>
-      <button onclick="location.href='chat.html'"
-              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl text-lg transition-all">
-        Start Random Chat
-      </button>
+
+        <div class="mt-8 flex justify-center gap-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+            <a href="about.html" class="hover:text-blue-500">About</a>
+            <a href="privacy.html" class="hover:text-blue-500">Privacy</a>
+            <a href="#" class="hover:text-blue-500">Terms</a>
+        </div>
     </div>
 
-    <div class="text-center text-xs text-gray-500 mt-12">
-      © 2026 Strangers Chat • Safe & Moderated • Report abuse if needed
-    </div>
-  </div>
-<div style="text-align: center; margin-top: 20px; padding-bottom: 20px; font-size: 14px;">
-    <hr style="border: 0; border-top: 1px solid #ddd; margin-bottom: 15px; width: 80%; margin-left: auto; margin-right: auto;">
-    <a href="about.html" style="color: #4b5563; text-decoration: none; margin: 0 10px;">About Us</a> | 
-    <a href="privacy.html" style="color: #4b5563; text-decoration: none; margin: 0 10px;">Privacy Policy & Rules</a>
-</div>
+    <p class="mt-6 text-[10px] text-gray-500 font-medium">© 2026 SafeChat Platform. Powered by GitHub Pages.</p>
 
-  
-  <script>
-    let count = 428;
-    const countEl = document.getElementById('count');
-
-    function updateCounter() {
-      const change = Math.floor(Math.random() * 11) + 3;
-      count += change;
-      if (count > 1350) count = 650;
-      countEl.textContent = count;
-    }
-
-    setInterval(updateCounter, 4500);
-    setTimeout(updateCounter, 2500);
-  </script>
 </body>
 </html>
