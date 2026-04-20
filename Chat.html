@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Chat - Live</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col">
+    <div class="bg-blue-600 p-4 shadow-md text-center font-bold text-white flex justify-between items-center">
+        <span>Global Chat Room</span>
+        <button onclick="location.href='index.html'" class="text-xs bg-blue-700 px-3 py-1 rounded-full border border-white">Exit</button>
+    </div>
+
+    <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-3 flex flex-col">
+        </div>
+
+    <div class="bg-white p-4 border-t flex gap-2 shadow-inner">
+        <input id="message-input" type="text" placeholder="Apna message likhein..." 
+               class="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:border-blue-500 text-sm">
+        <button id="send-btn" class="bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition">
+            Send
+        </button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Aapka Official Firebase Config (From Screenshot)
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4G0ulOFI_WUSNIFim1PT7xU11vf4yF7g",
+            authDomain: "anonymous-chat-7d857.firebaseapp.com",
+            projectId: "anonymous-chat-7d857",
+            storageBucket: "anonymous-chat-7d857.firebasestorage.app",
+            messagingSenderId: "141344412785",
+            appId: "1:141344412785:web:958a3c1361e385dcbcb7d0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const chatBox = document.getElementById('chat-box');
+        const msgInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        async function sendMessage() {
+            const text = msgInput.value.trim();
+            if (text !== "") {
+                await addDoc(collection(db, "messages"), {
+                    content: text,
+                    timestamp: serverTimestamp()
+                });
+                msgInput.value = "";
+            }
+        }
+
+        sendBtn.onclick = sendMessage;
+        msgInput.addEventListener("keypress", (e) => { if(e.key === "Enter") sendMessage(); });
+
+        const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
+        onSnapshot(q, (snapshot) => {
+            chatBox.innerHTML = "";
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const msgDiv = document.createElement('div');
+                msgDiv.className = "bg-white text-gray-800 p-3 rounded-2xl rounded-tl-none max-w-[85%] w-fit shadow-sm border border-gray-200 self-start";
+                msgDiv.textContent = data.content;
+                chatBox.appendChild(msgDiv);
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    </script>
+</body>
+</html>
