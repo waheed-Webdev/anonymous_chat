@@ -1,18 +1,27 @@
-<!DOCTYPE html>
+
+       <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Strangers Chat</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .theme-blue { --bg: #f0f9ff; --primary: #2563eb; --header: #1e40af; }
         .theme-dark { --bg: #111827; --primary: #374151; --header: #030712; }
         .theme-pink { --bg: #fff1f2; --primary: #db2777; --header: #9d174d; }
         .theme-green { --bg: #f0fdf4; --primary: #16a34a; --header: #14532d; }
-        body { background-color: var(--bg); transition: 0.3s; height: 100dvh; display: flex; flex-direction: column; }
+        body { background-color: var(--bg); transition: 0.3s; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+        #chat-box { scroll-behavior: smooth; }
         #chat-box::-webkit-scrollbar { width: 4px; }
         #chat-box::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        
+        .msg-animate { animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body id="main-body" class="theme-blue font-sans">
@@ -25,10 +34,10 @@
                 <input id="user-name" type="text" placeholder="Nickname" class="w-full border-2 rounded-xl p-3 outline-none focus:border-blue-500">
                 <div class="flex gap-2">
                     <input id="user-location" type="text" placeholder="State/Country" class="flex-1 border-2 rounded-xl p-3 outline-none">
-                    <select id="user-gender" class="border-2 rounded-xl p-3 outline-none bg-white">
-                        <option value="♂️">Male</option>
-                        <option value="♀️">Female</option>
-                        <option value="🌈">Other</option>
+                    <select id="user-gender" class="border-2 rounded-xl p-3 outline-none bg-white text-lg">
+                        <option value="♂️">♂️ Male</option>
+                        <option value="♀️">♀️ Female</option>
+                        <option value="🌈">🌈 Other</option>
                     </select>
                 </div>
                 <label class="flex items-center gap-2 text-sm text-gray-600">
@@ -45,8 +54,8 @@
                 <h1 class="font-bold text-lg flex items-center gap-2">🛡️ SafeChat</h1>
                 <p id="profile-info" class="text-[9px] opacity-80 italic"></p>
             </div>
-            <div class="flex gap-2">
-                <button onclick="toggleOnlineList()" class="bg-white/20 px-3 py-1 rounded-lg text-[10px] font-bold">👥 ONLINE</button>
+            <div class="flex gap-2 text-white">
+                <button onclick="toggleOnlineList()" class="bg-white/20 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">👥 Online</button>
                 <button onclick="location.href='index.html'" class="bg-red-500/20 px-3 py-1 rounded-lg text-[10px] font-bold">EXIT</button>
             </div>
         </div>
@@ -60,8 +69,7 @@
 
     <div id="online-list" class="hidden bg-white border-b p-3 shadow-md max-h-40 overflow-y-auto">
         <h3 class="text-[10px] font-bold text-gray-400 uppercase mb-2">Active Strangers:</h3>
-        <div id="users-container" class="flex flex-wrap gap-2 text-xs">
-            </div>
+        <div id="users-container" class="flex flex-wrap gap-2 text-[10px]"></div>
     </div>
 
     <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
@@ -70,17 +78,24 @@
         <div id="safety-alert" class="hidden bg-red-100 text-red-700 text-[10px] p-2 rounded-lg mb-2 border border-red-200 text-center font-bold animate-pulse">
             ⚠️ SAFETY: Sharing personal info is blocked!
         </div>
-        <div class="flex gap-2">
-            <input id="msg-input" type="text" placeholder="Type a safe message..." class="flex-1 border-2 rounded-full px-5 py-3 outline-none focus:border-blue-500">
+        <div class="flex items-center gap-2">
+            <label for="imageInput" class="cursor-pointer text-blue-600 p-2 active:scale-90 transition">
+                <i class="fas fa-paperclip text-xl"></i>
+            </label>
+            <input type="file" id="imageInput" accept="image/*" class="hidden">
+            
+            <input id="msg-input" type="text" placeholder="Type a message..." class="flex-1 border-2 rounded-full px-5 py-3 outline-none focus:border-blue-500 text-sm">
+            
             <button id="send-btn" class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                <i class="fas fa-paper-plane"></i>
             </button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, setDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, setDoc, doc, deleteDoc, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4G0ulOFI_WUSNIFim1PT7xU11vf4yF7g",
@@ -93,6 +108,8 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
+
         let user = { name: "", loc: "", gen: "" };
         let blocked = JSON.parse(localStorage.getItem('blocked') || "[]");
 
@@ -109,74 +126,68 @@
             user = { name: n, loc: l, gen: g };
             document.getElementById('login-modal').classList.add('hidden');
             document.getElementById('profile-info').textContent = `${g} ${n} | 📍 ${l}`;
-            
-            // Register as Online
             await setDoc(doc(db, "online", n), { ...user, t: serverTimestamp() });
         };
-
-        // Listen for Online Users
-        onSnapshot(collection(db, "online"), (snap) => {
-            const container = document.getElementById('users-container');
-            container.innerHTML = "";
-            snap.forEach(d => {
-                const u = d.data();
-                container.innerHTML += `<span class="bg-gray-100 px-2 py-1 rounded-full border">🟢 ${u.gen} ${u.name}</span>`;
-            });
-        });
 
         async function send() {
             const input = document.getElementById('msg-input');
             const txt = input.value.trim();
-            const alertBox = document.getElementById('safety-alert');
+            if(!txt) return;
             
             if(/(\d{8}|@|\.com|\.in|91\d|0\d)/.test(txt)) {
-                alertBox.classList.remove('hidden');
-                return setTimeout(() => alertBox.classList.add('hidden'), 3000);
+                document.getElementById('safety-alert').classList.remove('hidden');
+                return setTimeout(() => document.getElementById('safety-alert').classList.add('hidden'), 3000);
             }
 
-            if(txt) {
-                await addDoc(collection(db, "messages"), {
-                    n: user.name, l: user.loc, g: user.gen, c: txt, t: serverTimestamp()
-                });
-                input.value = "";
-            }
+            input.value = "";
+            await addDoc(collection(db, "messages"), {
+                n: user.name, l: user.loc, g: user.gen, c: txt, t: serverTimestamp(), type: 'text'
+            });
         }
 
+        document.getElementById('imageInput').onchange = async (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+            const storageRef = ref(storage, 'chats/' + Date.now() + "_" + file.name);
+            const upload = await uploadBytes(storageRef, file);
+            const url = await getDownloadURL(upload.ref);
+            await addDoc(collection(db, "messages"), {
+                n: user.name, l: user.loc, g: user.gen, img: url, t: serverTimestamp(), type: 'image'
+            });
+        };
+
         document.getElementById('send-btn').onclick = send;
-        const q = query(collection(db, "messages"), orderBy("t", "asc"));
+        document.getElementById('msg-input').onkeypress = (e) => { if(e.key === 'Enter') send(); };
+
+        const q = query(collection(db, "messages"), orderBy("t", "asc"), limit(50));
         onSnapshot(q, (snap) => {
             const box = document.getElementById('chat-box');
             box.innerHTML = "";
             snap.forEach(d => {
                 const data = d.data();
                 if(blocked.includes(data.n)) return;
+                const isMe = data.n === user.name;
                 const m = document.createElement('div');
-                m.className = "flex flex-col gap-1 max-w-[85%] animate-fade-in";
-                m.innerHTML = `
-                    <div class="flex items-center gap-2 px-1">
-                        <span class="text-[8px] font-bold text-gray-500 uppercase">${data.g} ${data.n} • ${data.l}</span>
-                        <button onclick="block('${data.n}')" class="text-[8px] text-red-400">BLOCK</button>
-                    </div>
-                    <div class="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 text-sm text-gray-800 font-medium">
-                        ${data.c}
-                    </div>
-                `;
+                m.className = `flex flex-col gap-1 ${isMe ? 'items-end ml-auto' : 'items-start mr-auto'} max-w-[85%] msg-animate`;
+                
+                let contentHTML = data.type === 'image' 
+                    ? `<img src="${data.img}" class="rounded-xl max-h-60 shadow-md" onclick="window.open('${data.img}')">`
+                    : `<div class="${isMe ? 'bg-blue-600 text-white' : 'bg-white text-gray-800'} p-3 rounded-2xl ${isMe ? 'rounded-tr-none' : 'rounded-tl-none'} shadow-sm border border-gray-100 text-sm font-medium">${data.c}</div>`;
+
+                m.innerHTML = `<div class="flex items-center gap-2 px-1"><span class="text-[8px] font-bold text-gray-500 uppercase">${data.g} ${data.n} • ${data.l}</span></div>${contentHTML}`;
                 box.appendChild(m);
             });
             box.scrollTop = box.scrollHeight;
         });
 
-        window.block = (n) => {
-            if(n === user.name) return;
-            if(confirm(`Block ${n}?`)) {
-                blocked.push(n);
-                localStorage.setItem('blocked', JSON.stringify(blocked));
-                location.reload();
-            }
-        };
+        onSnapshot(collection(db, "online"), (snap) => {
+            const container = document.getElementById('users-container');
+            container.innerHTML = "";
+            snap.forEach(d => { container.innerHTML += `<span class="bg-gray-100 px-2 py-1 rounded-full border">🟢 ${d.data().gen} ${d.data().name}</span>`; });
+        });
 
-        // Clear online status on close
         window.onbeforeunload = () => { if(user.name) deleteDoc(doc(db, "online", user.name)); };
     </script>
 </body>
 </html>
+     
