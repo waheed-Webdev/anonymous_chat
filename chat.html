@@ -3,97 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Strangers Chat</title>
+    <title>SafeChat Pro - Private & Public</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .theme-blue { --bg: #f0f9ff; --primary: #2563eb; --header: #1e40af; }
-        .theme-dark { --bg: #111827; --primary: #374151; --header: #030712; }
-        .theme-pink { --bg: #fff1f2; --primary: #db2777; --header: #9d174d; }
-        .theme-green { --bg: #f0fdf4; --primary: #16a34a; --header: #14532d; }
-        body { background-color: var(--bg); transition: 0.3s; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+        body { background-color: var(--bg); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
         #chat-box { scroll-behavior: smooth; }
-        #chat-box::-webkit-scrollbar { width: 4px; }
-        #chat-box::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
-        
-        .msg-animate { animation: slideUp 0.3s ease-out; }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .msg-animate { animation: slideUp 0.2s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .active-user { border: 2px solid #2563eb; background: #dbeafe !important; }
     </style>
 </head>
 <body id="main-body" class="theme-blue font-sans">
 
     <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
         <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border-4 border-blue-500 text-center">
-            <h2 class="text-2xl font-black text-gray-800 mb-2 uppercase">Join Chat</h2>
-            <p class="text-[10px] text-gray-400 mb-6">Encrypted & Secure Connection</p>
+            <h2 class="text-2xl font-black text-gray-800 mb-2 uppercase">Join Chatib Pro</h2>
             <div class="space-y-4">
                 <input id="user-name" type="text" placeholder="Nickname" class="w-full border-2 rounded-xl p-3 outline-none focus:border-blue-500">
                 <div class="flex gap-2">
-                    <input id="user-location" type="text" placeholder="State/Country" class="flex-1 border-2 rounded-xl p-3 outline-none">
-                    <select id="user-gender" class="border-2 rounded-xl p-3 outline-none bg-white text-lg">
+                    <input id="user-location" type="text" placeholder="City/State" class="flex-1 border-2 rounded-xl p-3 outline-none">
+                    <select id="user-gender" class="border-2 rounded-xl p-3 outline-none bg-white">
                         <option value="♂️">♂️ Male</option>
                         <option value="♀️">♀️ Female</option>
-                        <option value="🌈">🌈 Other</option>
                     </select>
                 </div>
-                <label class="flex items-center gap-2 text-sm text-gray-600">
-                    <input type="checkbox" id="age-check" class="w-5 h-5 accent-blue-600"> I am 18+ (Strict Rule)
-                </label>
-                <button onclick="startChat()" class="w-full bg-blue-600 text-white font-black py-4 rounded-xl shadow-lg active:scale-95 transition">ENTER ROOM</button>
+                <button onclick="startChat()" class="w-full bg-blue-600 text-white font-black py-4 rounded-xl shadow-lg active:scale-95 transition">START CHATTING</button>
             </div>
         </div>
     </div>
 
-    <div id="header-bg" class="p-4 text-white shadow-lg transition-colors" style="background-color: var(--header);">
+    <div id="header-bg" class="p-3 text-white shadow-lg" style="background-color: var(--header);">
         <div class="flex justify-between items-center">
-            <div>
-                <h1 class="font-bold text-lg flex items-center gap-2">🛡️ SafeChat</h1>
-                <p id="profile-info" class="text-[9px] opacity-80 italic"></p>
+            <h1 class="font-bold text-lg">🛡️ SafeChat Pro</h1>
+            <div class="flex gap-2">
+                <button onclick="setFilter('all')" class="bg-white/20 px-2 py-1 rounded text-[10px]">ALL</button>
+                <button onclick="setFilter('♂️')" class="bg-blue-500/40 px-2 py-1 rounded text-[10px]">♂️ MEN</button>
+                <button onclick="setFilter('♀️')" class="bg-pink-500/40 px-2 py-1 rounded text-[10px]">♀️ WOMEN</button>
             </div>
-            <div class="flex gap-2 text-white">
-                <button onclick="toggleOnlineList()" class="bg-white/20 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">👥 Online</button>
-                <button onclick="location.href='index.html'" class="bg-red-500/20 px-3 py-1 rounded-lg text-[10px] font-bold">EXIT</button>
-            </div>
-        </div>
-        <div class="flex gap-4 justify-center mt-3 bg-black/20 p-2 rounded-xl">
-            <button onclick="changeTheme('theme-blue')" class="w-5 h-5 rounded-full bg-blue-500 border border-white"></button>
-            <button onclick="changeTheme('theme-dark')" class="w-5 h-5 rounded-full bg-gray-800 border border-white"></button>
-            <button onclick="changeTheme('theme-pink')" class="w-5 h-5 rounded-full bg-pink-500 border border-white"></button>
-            <button onclick="changeTheme('theme-green')" class="w-5 h-5 rounded-full bg-green-500 border border-white"></button>
         </div>
     </div>
 
-    <div id="online-list" class="hidden bg-white border-b p-3 shadow-md max-h-40 overflow-y-auto">
-        <h3 class="text-[10px] font-bold text-gray-400 uppercase mb-2">Active Strangers:</h3>
-        <div id="users-container" class="flex flex-wrap gap-2 text-[10px]"></div>
+    <div id="online-list" class="bg-white border-b p-2 overflow-x-auto whitespace-nowrap flex gap-2 shadow-sm">
+        </div>
+
+    <div id="chat-status" class="bg-yellow-50 text-[10px] text-center py-1 font-bold text-yellow-700 border-b">
+        📢 You are in PUBLIC ROOM (Everyone can see)
     </div>
 
     <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
 
-    <div class="p-4 bg-white border-t-2 border-gray-100 shadow-inner">
-        <div id="safety-alert" class="hidden bg-red-100 text-red-700 text-[10px] p-2 rounded-lg mb-2 border border-red-200 text-center font-bold animate-pulse">
-            ⚠️ SAFETY: Sharing personal info is blocked!
-        </div>
+    <div class="p-4 bg-white border-t shadow-inner">
         <div class="flex items-center gap-2">
-            <label for="imageInput" class="cursor-pointer text-blue-600 p-2 active:scale-90 transition">
-                <i class="fas fa-paperclip text-xl"></i>
-            </label>
+            <label for="imageInput" class="cursor-pointer text-blue-600 p-2"><i class="fas fa-paperclip text-xl"></i></label>
             <input type="file" id="imageInput" accept="image/*" class="hidden">
-            
-            <input id="msg-input" type="text" placeholder="Type a message..." class="flex-1 border-2 rounded-full px-5 py-3 outline-none focus:border-blue-500 text-sm">
-            
-            <button id="send-btn" class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition">
-                <i class="fas fa-paper-plane"></i>
-            </button>
+            <input id="msg-input" type="text" placeholder="Type a message..." class="flex-1 border-2 rounded-full px-5 py-2 outline-none text-sm">
+            <button id="send-btn" class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg"><i class="fas fa-paper-plane"></i></button>
         </div>
+        <button id="exit-private" class="hidden w-full mt-2 text-[10px] text-red-500 font-bold underline" onclick="exitPrivate()">Back to Public Chat</button>
     </div>
 
     <script type="module">
+        // SCRIPT KA BAAKI HISSA AGLE MESSAGE MEIN HAI...
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, setDoc, doc, deleteDoc, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, setDoc, doc, deleteDoc, limit, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB4G0ulOFI_WUSNIFim1PT7xU11vf4yF7g",
@@ -108,109 +82,128 @@
         const db = getFirestore(app);
 
         let user = { name: "", loc: "", gen: "" };
-        let blocked = JSON.parse(localStorage.getItem('blocked') || "[]");
+        let activeChat = "public"; // default room
+        let currentFilter = "all";
+        const imgbbKey = "8d1c34984d99e9091e7f22e50b7e5168"; // Aapki working key
 
-        window.toggleOnlineList = () => document.getElementById('online-list').classList.toggle('hidden');
-        window.changeTheme = (cls) => document.getElementById('main-body').className = cls;
-
+        // --- AUTH & LOGIN ---
         window.startChat = async () => {
             const n = document.getElementById('user-name').value.trim();
             const l = document.getElementById('user-location').value.trim();
             const g = document.getElementById('user-gender').value;
-            const a = document.getElementById('age-check').checked;
+            if(!n || !l) return alert("Nickname and Location required!");
 
-            if(!n || !l || !a) return alert("Fill all details!");
             user = { name: n, loc: l, gen: g };
             document.getElementById('login-modal').classList.add('hidden');
-            document.getElementById('profile-info').textContent = `${g} ${n} | 📍 ${l}`;
             await setDoc(doc(db, "online", n), { ...user, t: serverTimestamp() });
+            loadMessages();
+            loadOnlineUsers();
         };
 
+        // --- NAVIGATION & FILTERS ---
+        window.setFilter = (f) => {
+            currentFilter = f;
+            loadOnlineUsers();
+        };
+
+        window.openPrivateChat = (targetName) => {
+            if(targetName === user.name) return;
+            // Private Room ID logic (alphabetical order so both users land in same room)
+            activeChat = [user.name, targetName].sort().join("_");
+            document.getElementById('chat-status').innerHTML = `🔒 Private Chat with <b>${targetName}</b>`;
+            document.getElementById('exit-private').classList.remove('hidden');
+            loadMessages();
+        };
+
+        window.exitPrivate = () => {
+            activeChat = "public";
+            document.getElementById('chat-status').innerHTML = `📢 You are in PUBLIC ROOM (Everyone can see)`;
+            document.getElementById('exit-private').classList.add('hidden');
+            loadMessages();
+        };
+
+        // --- MESSAGING ---
         async function send() {
             const input = document.getElementById('msg-input');
             const txt = input.value.trim();
             if(!txt) return;
-            
-            if(/(\d{8}|@|\.com|\.in|91\d|0\d)/.test(txt)) {
-                document.getElementById('safety-alert').classList.remove('hidden');
-                return setTimeout(() => document.getElementById('safety-alert').classList.add('hidden'), 3000);
-            }
 
-            input.value = "";
             await addDoc(collection(db, "messages"), {
-                n: user.name, l: user.loc, g: user.gen, c: txt, t: serverTimestamp(), type: 'text'
+                n: user.name, g: user.gen, l: user.loc,
+                c: txt, t: serverTimestamp(),
+                type: 'text', room: activeChat
             });
+            input.value = "";
         }
 
-        // IMPROVED IMAGE UPLOAD LOGIC
+        // --- IMAGE UPLOAD (Using your successful ImgBB method) ---
         document.getElementById('imageInput').onchange = async (e) => {
             const file = e.target.files[0];
             if(!file) return;
-
-            const inputField = document.getElementById('msg-input');
-            const originalPlaceholder = inputField.placeholder;
-            inputField.placeholder = "Uploading photo...";
-            inputField.disabled = true;
-
+            document.getElementById('msg-input').placeholder = "Uploading...";
+            
             const formData = new FormData();
             formData.append("image", file);
 
             try {
-                // Fixed API request for better stability
-                const response = await fetch("https://api.imgbb.com/1/upload?key=8d1c34984d99e9091e7f22e50b7e5168", {
-                    method: "POST",
-                    body: formData
-                });
-                
-                const result = await response.json();
-                
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, { method: "POST", body: formData });
+                const result = await res.json();
                 if(result.success) {
-                    const url = result.data.url;
                     await addDoc(collection(db, "messages"), {
-                        n: user.name, l: user.loc, g: user.gen, img: url, t: serverTimestamp(), type: 'image'
+                        n: user.name, g: user.gen, l: user.loc,
+                        img: result.data.url, t: serverTimestamp(),
+                        type: 'image', room: activeChat
                     });
-                } else {
-                    alert("ImgBB Error: " + result.error.message);
                 }
-            } catch (error) {
-                alert("Upload failed! Check your internet.");
-            } finally {
-                inputField.placeholder = originalPlaceholder;
-                inputField.disabled = false;
-                e.target.value = ""; // Clear file input
-            }
+            } catch (err) { alert("Upload Failed!"); }
+            document.getElementById('msg-input').placeholder = "Type a message...";
         };
+
+        // --- REAL-TIME LISTENERS ---
+        let msgUnsub;
+        function loadMessages() {
+            if(msgUnsub) msgUnsub();
+            const q = query(collection(db, "messages"), where("room", "==", activeChat), orderBy("t", "asc"), limit(50));
+            
+            msgUnsub = onSnapshot(q, (snap) => {
+                const box = document.getElementById('chat-box');
+                box.innerHTML = "";
+                snap.forEach(d => {
+                    const data = d.data();
+                    const isMe = data.n === user.name;
+                    const m = document.createElement('div');
+                    m.className = `flex flex-col ${isMe ? 'items-end ml-auto' : 'items-start mr-auto'} max-w-[85%] msg-animate`;
+                    
+                    let content = data.type === 'image' 
+                        ? `<img src="${data.img}" class="rounded-xl max-h-60 shadow-md border-2 border-white" onclick="window.open('${data.img}')">`
+                        : `<div class="${isMe ? 'bg-blue-600 text-white' : 'bg-white text-gray-800'} p-3 rounded-2xl ${isMe ? 'rounded-tr-none' : 'rounded-tl-none'} shadow-sm border border-gray-100 text-sm font-medium">${data.c}</div>`;
+
+                    m.innerHTML = `<span class="text-[8px] font-bold text-gray-500 uppercase px-1">${data.g} ${data.n}</span>${content}`;
+                    box.appendChild(m);
+                });
+                box.scrollTop = box.scrollHeight;
+            });
+        }
+
+        function loadOnlineUsers() {
+            onSnapshot(collection(db, "online"), (snap) => {
+                const container = document.getElementById('online-list');
+                container.innerHTML = "";
+                snap.forEach(d => {
+                    const userData = d.data();
+                    if(currentFilter !== 'all' && userData.gen !== currentFilter) return;
+                    
+                    const btn = document.createElement('button');
+                    btn.className = `bg-gray-100 px-3 py-1 rounded-full border text-[11px] font-bold flex items-center gap-1 hover:bg-blue-50 transition`;
+                    btn.innerHTML = `<span>${userData.gen}</span> ${userData.name}`;
+                    btn.onclick = () => openPrivateChat(userData.name);
+                    container.appendChild(btn);
+                });
+            });
+        }
 
         document.getElementById('send-btn').onclick = send;
         document.getElementById('msg-input').onkeypress = (e) => { if(e.key === 'Enter') send(); };
-
-        const q = query(collection(db, "messages"), orderBy("t", "asc"), limit(50));
-        onSnapshot(q, (snap) => {
-            const box = document.getElementById('chat-box');
-            box.innerHTML = "";
-            snap.forEach(d => {
-                const data = d.data();
-                if(blocked.includes(data.n)) return;
-                const isMe = data.n === user.name;
-                const m = document.createElement('div');
-                m.className = `flex flex-col gap-1 ${isMe ? 'items-end ml-auto' : 'items-start mr-auto'} max-w-[85%] msg-animate`;
-                
-                let contentHTML = data.type === 'image' 
-                    ? `<img src="${data.img}" class="rounded-xl max-h-60 shadow-md border-2 border-white" onclick="window.open('${data.img}')">`
-                    : `<div class="${isMe ? 'bg-blue-600 text-white' : 'bg-white text-gray-800'} p-3 rounded-2xl ${isMe ? 'rounded-tr-none' : 'rounded-tl-none'} shadow-sm border border-gray-100 text-sm font-medium">${data.c}</div>`;
-
-                m.innerHTML = `<div class="flex items-center gap-2 px-1"><span class="text-[8px] font-bold text-gray-500 uppercase">${data.g} ${data.n} • ${data.l}</span></div>${contentHTML}`;
-                box.appendChild(m);
-            });
-            box.scrollTop = box.scrollHeight;
-        });
-
-        onSnapshot(collection(db, "online"), (snap) => {
-            const container = document.getElementById('users-container');
-            container.innerHTML = "";
-            snap.forEach(d => { container.innerHTML += `<span class="bg-gray-100 px-2 py-1 rounded-full border">🟢 ${d.data().gen} ${d.data().name}</span>`; });
-        });
-
         window.onbeforeunload = () => { if(user.name) deleteDoc(doc(db, "online", user.name)); };
     </script>
 </body>
