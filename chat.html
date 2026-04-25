@@ -3,23 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeChat Pro - Private & Public</title>
+    
+    <title>SafeChat Pro - Live Anonymous Chat</title>
+    <meta name="description" content="Talk to strangers anonymously on SafeChat Pro. No logs, no registration.">
+    <meta property="og:title" content="Join me on SafeChat Pro">
+    <meta property="og:description" content="Click here to start an anonymous chat with me safely. No login required.">
+    <meta property="og:image" content="https://waheed-webdev.github.io/anonymous_chat/logo.png">
+    <meta property="og:url" content="https://waheed-webdev.github.io/anonymous_chat/chat.html">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         .theme-blue { --bg: #f0f9ff; --primary: #2563eb; --header: #1e40af; }
         body { background-color: var(--bg); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
         #chat-box { scroll-behavior: smooth; }
         .msg-animate { animation: slideUp 0.2s ease-out; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .active-user { border: 2px solid #2563eb; background: #dbeafe !important; }
+        
+        /* Chat Bubble Designs */
+        .sent-bubble { background: #2563eb; color: white; border-radius: 18px 18px 0 18px; }
+        .received-bubble { background: #e5e7eb; color: #1f2937; border-radius: 18px 18px 18px 0; border: 1px solid #d1d5db; }
     </style>
 </head>
 <body id="main-body" class="theme-blue font-sans">
 
     <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
         <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border-4 border-blue-500 text-center">
-            <h2 class="text-2xl font-black text-gray-800 mb-2 uppercase">Join Chatib Pro</h2>
+            <h2 class="text-2xl font-black text-gray-800 mb-2 uppercase">Join SafeChat Pro</h2>
             <div class="space-y-4">
                 <input id="user-name" type="text" placeholder="Nickname" class="w-full border-2 rounded-xl p-3 outline-none focus:border-blue-500">
                 <div class="flex gap-2">
@@ -45,8 +56,7 @@
         </div>
     </div>
 
-    <div id="online-list" class="bg-white border-b p-2 overflow-x-auto whitespace-nowrap flex gap-2 shadow-sm">
-        </div>
+    <div id="online-list" class="bg-white border-b p-2 overflow-x-auto whitespace-nowrap flex gap-2 shadow-sm"></div>
 
     <div id="chat-status" class="bg-yellow-50 text-[10px] text-center py-1 font-bold text-yellow-700 border-b">
         📢 You are in PUBLIC ROOM (Everyone can see)
@@ -65,10 +75,10 @@
     </div>
 
     <script type="module">
-        // SCRIPT KA BAAKI HISSA AGLE MESSAGE MEIN HAI...
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, setDoc, doc, deleteDoc, limit, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // Your original Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyB4G0ulOFI_WUSNIFim1PT7xU11vf4yF7g",
             authDomain: "anonymous-chat-7d857.firebaseapp.com",
@@ -82,11 +92,10 @@
         const db = getFirestore(app);
 
         let user = { name: "", loc: "", gen: "" };
-        let activeChat = "public"; // default room
+        let activeChat = "public";
         let currentFilter = "all";
-        const imgbbKey = "8d1c34984d99e9091e7f22e50b7e5168"; // Aapki working key
+        const imgbbKey = "8d1c34984d99e9091e7f22e50b7e5168";
 
-        // --- AUTH & LOGIN ---
         window.startChat = async () => {
             const n = document.getElementById('user-name').value.trim();
             const l = document.getElementById('user-location').value.trim();
@@ -100,7 +109,6 @@
             loadOnlineUsers();
         };
 
-        // --- NAVIGATION & FILTERS ---
         window.setFilter = (f) => {
             currentFilter = f;
             loadOnlineUsers();
@@ -108,7 +116,6 @@
 
         window.openPrivateChat = (targetName) => {
             if(targetName === user.name) return;
-            // Private Room ID logic (alphabetical order so both users land in same room)
             activeChat = [user.name, targetName].sort().join("_");
             document.getElementById('chat-status').innerHTML = `🔒 Private Chat with <b>${targetName}</b>`;
             document.getElementById('exit-private').classList.remove('hidden');
@@ -122,7 +129,6 @@
             loadMessages();
         };
 
-        // --- MESSAGING ---
         async function send() {
             const input = document.getElementById('msg-input');
             const txt = input.value.trim();
@@ -136,7 +142,6 @@
             input.value = "";
         }
 
-        // --- IMAGE UPLOAD (Using your successful ImgBB method) ---
         document.getElementById('imageInput').onchange = async (e) => {
             const file = e.target.files[0];
             if(!file) return;
@@ -159,7 +164,6 @@
             document.getElementById('msg-input').placeholder = "Type a message...";
         };
 
-        // --- REAL-TIME LISTENERS ---
         let msgUnsub;
         function loadMessages() {
             if(msgUnsub) msgUnsub();
@@ -172,13 +176,20 @@
                     const data = d.data();
                     const isMe = data.n === user.name;
                     const m = document.createElement('div');
-                    m.className = `flex flex-col ${isMe ? 'items-end ml-auto' : 'items-start mr-auto'} max-w-[85%] msg-animate`;
+                    
+                    // Logic to separate Sent and Received messages
+                    m.className = `flex flex-col ${isMe ? 'items-end ml-auto' : 'items-start mr-auto'} max-w-[85%] msg-animate mb-2`;
                     
                     let content = data.type === 'image' 
-                        ? `<img src="${data.img}" class="rounded-xl max-h-60 shadow-md border-2 border-white" onclick="window.open('${data.img}')">`
-                        : `<div class="${isMe ? 'bg-blue-600 text-white' : 'bg-white text-gray-800'} p-3 rounded-2xl ${isMe ? 'rounded-tr-none' : 'rounded-tl-none'} shadow-sm border border-gray-100 text-sm font-medium">${data.c}</div>`;
+                        ? `<img src="${data.img}" class="rounded-xl max-h-60 shadow-md border-2 border-white cursor-pointer" onclick="window.open('${data.img}')">`
+                        : `<div class="p-3 shadow-sm text-sm font-medium ${isMe ? 'sent-bubble' : 'received-bubble'}">${data.c}</div>`;
 
-                    m.innerHTML = `<span class="text-[8px] font-bold text-gray-500 uppercase px-1">${data.g} ${data.n}</span>${content}`;
+                    m.innerHTML = `
+                        <span class="text-[9px] font-bold text-gray-500 uppercase px-1 mb-1">
+                            ${isMe ? 'You' : (data.g + ' ' + data.n + ' • ' + (data.l || 'Global'))}
+                        </span>
+                        ${content}
+                    `;
                     box.appendChild(m);
                 });
                 box.scrollTop = box.scrollHeight;
