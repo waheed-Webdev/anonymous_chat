@@ -281,5 +281,33 @@
         document.getElementById('msg-input').onkeypress = (e) => { if(e.key === 'Enter') send(); };
         window.onbeforeunload = () => { if(user.name) deleteDoc(doc(db, "online", user.name)); };
     </script>
+        <div id="policy-section" class="bg-gray-100 p-8 text-gray-700 text-[10px] mt-10 border-t">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-sm font-bold mb-4 uppercase">About SafeChat Pro</h2>
+            <p class="mb-4">SafeChat Pro is a free, anonymous messaging platform designed to connect people globally without registration. Our mission is to provide a safe space for casual conversations while maintaining user privacy.</p>
+            
+            <h2 class="text-sm font-bold mb-4 uppercase">Privacy Policy</h2>
+            <ul class="list-disc ml-5 space-y-2 mb-4">
+                <li><strong>Data Protection:</strong> We do not store personal information like email or phone numbers.</li>
+                <li><strong>Cookies:</strong> We use Google AdSense cookies to serve ads based on user interests.</li>
+                <li><strong>Safety:</strong> We have an 18+ confirmation gate to ensure community safety.</li>
+            </ul>
+
+            <h2 class="text-sm font-bold mb-4 uppercase">Contact Us</h2>
+            <p>Email: <b>support@safechatpro.com</b></p>
+        </div>
+    </div>
+
+    <footer class="bg-white p-4 text-center border-t">
+        <div class="flex justify-center gap-6 text-[10px] font-bold text-gray-400 uppercase">
+            <a href="#policy-section" class="hover:text-blue-600">Privacy Policy</a>
+            <a href="#policy-section" class="hover:text-blue-600">Terms</a>
+            <a href="#policy-section" class="hover:text-blue-600">About</a>
+        </div>
+    </footer>
+    ```
+
+
+
 </body>
 </html>
