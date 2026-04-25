@@ -21,9 +21,11 @@
         .msg-animate { animation: slideUp 0.2s ease-out; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Chat Bubble Designs */
         .sent-bubble { background: #2563eb; color: white; border-radius: 18px 18px 0 18px; }
         .received-bubble { background: #e5e7eb; color: #1f2937; border-radius: 18px 18px 18px 0; border: 1px solid #d1d5db; }
+        
+        /* Disabled Button Style */
+        .btn-disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
     </style>
 </head>
 <body id="main-body" class="theme-blue font-sans">
@@ -31,16 +33,72 @@
     <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
         <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border-4 border-blue-500 text-center">
             <h2 class="text-2xl font-black text-gray-800 mb-2 uppercase">Join SafeChat Pro</h2>
-            <div class="space-y-4">
-                <input id="user-name" type="text" placeholder="Nickname" class="w-full border-2 rounded-xl p-3 outline-none focus:border-blue-500">
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 ml-1">NICKNAME</label>
+                    <input id="user-name" type="text" placeholder="Your Name" class="w-full border-2 rounded-xl p-3 outline-none focus:border-blue-500 text-sm">
+                </div>
+                
                 <div class="flex gap-2">
-                    <input id="user-location" type="text" placeholder="City/State" class="flex-1 border-2 rounded-xl p-3 outline-none">
-                    <select id="user-gender" class="border-2 rounded-xl p-3 outline-none bg-white">
-                        <option value="♂️">♂️ Male</option>
-                        <option value="♀️">♀️ Female</option>
+                    <div class="w-1/2">
+                        <label class="text-[10px] font-bold text-gray-500 ml-1">GENDER</label>
+                        <select id="user-gender" class="w-full border-2 rounded-xl p-3 outline-none bg-white text-sm">
+                            <option value="♂️">♂️ Male</option>
+                            <option value="♀️">♀️ Female</option>
+                        </select>
+                    </div>
+                    <div class="w-1/2">
+                        <label class="text-[10px] font-bold text-gray-500 ml-1">COUNTRY</label>
+                        <select id="user-country" class="w-full border-2 rounded-xl p-3 outline-none bg-white text-sm">
+                            <option value="India">🇮🇳 India</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 ml-1">STATE</label>
+                    <select id="user-state" class="w-full border-2 rounded-xl p-3 outline-none bg-white text-sm">
+                        <option value="">Select State</option>
+                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                        <option value="Assam">Assam</option>
+                        <option value="Bihar">Bihar</option>
+                        <option value="Chhattisgarh">Chhattisgarh</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Goa">Goa</option>
+                        <option value="Gujarat">Gujarat</option>
+                        <option value="Haryana">Haryana</option>
+                        <option value="Himachal Pradesh">Himachal Pradesh</option>
+                        <option value="Jharkhand">Jharkhand</option>
+                        <option value="Karnataka">Karnataka</option>
+                        <option value="Kerala">Kerala</option>
+                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Manipur">Manipur</option>
+                        <option value="Meghalaya">Meghalaya</option>
+                        <option value="Mizoram">Mizoram</option>
+                        <option value="Nagaland">Nagaland</option>
+                        <option value="Odisha">Odisha</option>
+                        <option value="Punjab">Punjab</option>
+                        <option value="Rajasthan">Rajasthan</option>
+                        <option value="Sikkim">Sikkim</option>
+                        <option value="Tamil Nadu">Tamil Nadu</option>
+                        <option value="Telangana">Telangana</option>
+                        <option value="Tripura">Tripura</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                        <option value="Uttarakhand">Uttarakhand</option>
+                        <option value="West Bengal">West Bengal</option>
                     </select>
                 </div>
-                <button onclick="startChat()" class="w-full bg-blue-600 text-white font-black py-4 rounded-xl shadow-lg active:scale-95 transition">START CHATTING</button>
+
+                <div class="flex items-start gap-2 bg-blue-50 p-2 rounded-lg">
+                    <input type="checkbox" id="age-confirm" class="mt-1 w-4 h-4 cursor-pointer">
+                    <label for="age-confirm" class="text-[10px] text-gray-700 font-medium">
+                        I am 18+ years old and I agree to the terms.
+                    </label>
+                </div>
+
+                <button onclick="startChat()" id="start-btn" class="w-full bg-blue-600 text-white font-black py-4 rounded-xl shadow-lg active:scale-95 transition btn-disabled">START CHATTING</button>
             </div>
         </div>
     </div>
@@ -78,7 +136,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, setDoc, doc, deleteDoc, limit, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // Your original Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyB4G0ulOFI_WUSNIFim1PT7xU11vf4yF7g",
             authDomain: "anonymous-chat-7d857.firebaseapp.com",
@@ -96,13 +153,28 @@
         let currentFilter = "all";
         const imgbbKey = "8d1c34984d99e9091e7f22e50b7e5168";
 
+        // Logic to enable/disable button based on 18+ check
+        const ageCheckbox = document.getElementById('age-confirm');
+        const startBtn = document.getElementById('start-btn');
+        ageCheckbox.addEventListener('change', (e) => {
+            if(e.target.checked) startBtn.classList.remove('btn-disabled');
+            else startBtn.classList.add('btn-disabled');
+        });
+
         window.startChat = async () => {
             const n = document.getElementById('user-name').value.trim();
-            const l = document.getElementById('user-location').value.trim();
             const g = document.getElementById('user-gender').value;
-            if(!n || !l) return alert("Nickname and Location required!");
+            const c = document.getElementById('user-country').value;
+            const s = document.getElementById('user-state').value;
+            const isChecked = document.getElementById('age-confirm').checked;
 
-            user = { name: n, loc: l, gen: g };
+            if(!n) return alert("Please enter a Nickname!");
+            if(!s) return alert("Please select your State!");
+            if(!isChecked) return alert("You must confirm you are 18+");
+
+            const fullLoc = `${s}, ${c}`;
+            user = { name: n, loc: fullLoc, gen: g };
+            
             document.getElementById('login-modal').classList.add('hidden');
             await setDoc(doc(db, "online", n), { ...user, t: serverTimestamp() });
             loadMessages();
@@ -146,10 +218,8 @@
             const file = e.target.files[0];
             if(!file) return;
             document.getElementById('msg-input').placeholder = "Uploading...";
-            
             const formData = new FormData();
             formData.append("image", file);
-
             try {
                 const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, { method: "POST", body: formData });
                 const result = await res.json();
@@ -168,7 +238,6 @@
         function loadMessages() {
             if(msgUnsub) msgUnsub();
             const q = query(collection(db, "messages"), where("room", "==", activeChat), orderBy("t", "asc"), limit(50));
-            
             msgUnsub = onSnapshot(q, (snap) => {
                 const box = document.getElementById('chat-box');
                 box.innerHTML = "";
@@ -176,14 +245,10 @@
                     const data = d.data();
                     const isMe = data.n === user.name;
                     const m = document.createElement('div');
-                    
-                    // Logic to separate Sent and Received messages
                     m.className = `flex flex-col ${isMe ? 'items-end ml-auto' : 'items-start mr-auto'} max-w-[85%] msg-animate mb-2`;
-                    
                     let content = data.type === 'image' 
                         ? `<img src="${data.img}" class="rounded-xl max-h-60 shadow-md border-2 border-white cursor-pointer" onclick="window.open('${data.img}')">`
                         : `<div class="p-3 shadow-sm text-sm font-medium ${isMe ? 'sent-bubble' : 'received-bubble'}">${data.c}</div>`;
-
                     m.innerHTML = `
                         <span class="text-[9px] font-bold text-gray-500 uppercase px-1 mb-1">
                             ${isMe ? 'You' : (data.g + ' ' + data.n + ' • ' + (data.l || 'Global'))}
@@ -203,7 +268,6 @@
                 snap.forEach(d => {
                     const userData = d.data();
                     if(currentFilter !== 'all' && userData.gen !== currentFilter) return;
-                    
                     const btn = document.createElement('button');
                     btn.className = `bg-gray-100 px-3 py-1 rounded-full border text-[11px] font-bold flex items-center gap-1 hover:bg-blue-50 transition`;
                     btn.innerHTML = `<span>${userData.gen}</span> ${userData.name}`;
