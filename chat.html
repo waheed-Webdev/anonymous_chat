@@ -120,7 +120,8 @@
         📢 You are in PUBLIC ROOM (Everyone can see)
     </div>
 
-    <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+    <div id="chat-box" style="height: 400px; overflow-y: auto;" class="p-4 space-y-4 flex flex-col"></div>
+
 
     <div class="p-4 bg-white border-t shadow-inner">
         <div class="flex items-center gap-2">
@@ -281,7 +282,8 @@
         document.getElementById('msg-input').onkeypress = (e) => { if(e.key === 'Enter') send(); };
         window.onbeforeunload = () => { if(user.name) deleteDoc(doc(db, "online", user.name)); };
     </script>
-    <div style="height: 300px;"></div>
+    <div style="height: 50px;"></div>
+        
 
         <div id="policy-section" class="bg-gray-100 p-8 text-gray-700 text-[10px] border-t">
 
