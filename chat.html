@@ -8,67 +8,104 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --bg: #f0f2f5; --primary: #2563eb; --header: #1e40af; }
-        body { background-color: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-        #chat-box::-webkit-scrollbar { width: 5px; }
-        #chat-box::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .msg-animate { animation: slideUp 0.2s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        body { background-color: var(--bg); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; font-family: sans-serif; }
+        #chat-screen { display: none; flex-direction: column; height: 100vh; }
         .received { align-self: flex-start; background: #e2e8f0; color: #1e293b; border-radius: 15px 15px 15px 0; }
         .sent { align-self: flex-end; background: #2563eb; color: white; border-radius: 15px 15px 0 15px; }
+        .ai-msg { align-self: flex-start; background: #fef3c7; color: #92400e; border-radius: 15px 15px 15px 0; border: 1px solid #fde68a; }
+        .btn-disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body>
 
-    <div class="bg-blue-800 text-white shadow-lg sticky top-0 z-50">
-        <div class="flex justify-between items-center px-4 py-3">
-            <h1 class="font-bold text-lg flex items-center gap-2">🛡️ SafeChat Pro</h1>
-            <button onclick="exitChat()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-full text-xs font-bold transition">EXIT</button>
-        </div>
-        
-        <div class="bg-blue-700 text-white flex justify-around py-2 font-bold text-[10px] uppercase tracking-wider border-t border-blue-500">
-            <div class="cursor-pointer border-b-2 border-white pb-1">1 on 1 Chat</div>
-            <div class="cursor-pointer opacity-80" onclick="alert('Rooms coming soon!')">Rooms</div>
-            <div class="cursor-pointer opacity-80" onclick="alert('AI Chat coming soon!')">Ai Chat</div>
-            <div class="cursor-pointer">🔊</div>
+    <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl border-4 border-blue-500">
+            <div class="text-center mb-4">
+                <span class="text-4xl">🛡️</span>
+                <h2 class="text-2xl font-black text-gray-800 uppercase tracking-tighter">SafeChat Pro</h2>
+                <p class="text-[10px] text-blue-600 font-bold uppercase">No Login • No Logs • Pure Private</p>
+            </div>
+            
+            <div class="space-y-3">
+                <input id="user-name" type="text" placeholder="Choose a Nickname..." class="w-full border-2 rounded-xl px-4 py-2 outline-none focus:border-blue-500 font-bold">
+                
+                <select id="user-gender" class="w-full border-2 rounded-xl px-4 py-2 bg-white font-semibold">
+                    <option value="♂ Male">♂ Male</option>
+                    <option value="♀ Female">♀ Female</option>
+                </select>
+
+                <select id="user-country" class="w-full border-2 rounded-xl px-4 py-2 bg-white">
+                    <option value="India">🇮🇳 India</option>
+                    <option value="Pakistan">🇵🇰 Pakistan</option>
+                    <option value="USA">🇺🇸 USA</option>
+                    <option value="UK">🇬🇧 UK</option>
+                    <option value="Bangladesh">🇧🇩 Bangladesh</option>
+                </select>
+
+                <select id="user-state" class="w-full border-2 rounded-xl px-4 py-2 bg-white max-h-40 overflow-y-auto">
+                    <option value="Maharashtra">Maharashtra</option><option value="Delhi">Delhi</option>
+                    <option value="UP">Uttar Pradesh</option><option value="Bihar">Bihar</option>
+                    <option value="West Bengal">West Bengal</option><option value="Gujarat">Gujarat</option>
+                    <option value="Karnataka">Karnataka</option><option value="Rajasthan">Rajasthan</option>
+                    <option value="Punjab">Punjab</option><option value="Haryana">Haryana</option>
+                    <option value="MP">Madhya Pradesh</option><option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Other">Other State</option>
+                </select>
+
+                <div class="flex items-start gap-2 bg-blue-50 p-3 rounded-xl border border-blue-100 mt-2">
+                    <input type="checkbox" id="age-confirm" class="mt-1 w-5 h-5 accent-blue-600">
+                    <label for="age-confirm" class="text-[11px] text-gray-700 font-bold leading-tight">
+                        I am 18+ and I agree to the <a href="#" class="underline">Terms</a>.
+                    </label>
+                </div>
+
+                <button onclick="startChat()" id="start-btn" class="w-full bg-blue-600 text-white font-black py-4 rounded-2xl shadow-lg btn-disabled uppercase tracking-widest active:scale-95 transition">Start Chatting</button>
+            </div>
         </div>
     </div>
 
-    <div class="bg-white flex justify-around py-3 border-b shadow-sm text-[9px] text-gray-500 font-bold sticky top-[84px] z-40">
-        <div class="flex flex-col items-center gap-1 text-blue-600"><i class="fas fa-user-friends text-lg"></i>ONLINE</div>
-        <div class="flex flex-col items-center gap-1" onclick="alert('Gender Filter Active')"><i class="fas fa-venus-mars text-lg"></i>GENDER</div>
-        <div class="flex flex-col items-center gap-1"><i class="fas fa-history text-lg"></i>HISTORY</div>
-        <div class="flex flex-col items-center gap-1"><i class="fas fa-search text-lg"></i>SEARCH</div>
-        <div class="flex flex-col items-center gap-1 text-red-500 relative">
-            <i class="fas fa-envelope text-lg"></i>
-            <span class="absolute -top-1 -right-1 bg-red-500 text-white px-1 rounded-full text-[7px]">2</span>INBOX
-        </div>
-        <div class="flex flex-col items-center gap-1"><i class="fas fa-heart text-lg"></i>FRIENDS</div>
-        <div class="flex flex-col items-center gap-1" onclick="location.reload()"><i class="fas fa-dice text-lg"></i>RANDOM</div>
-    </div>
-
-    <div class="bg-yellow-50 text-[10px] text-center py-1 font-bold text-yellow-700 border-b">
-        📢 You are in PUBLIC ROOM | <span class="text-blue-600">ONLINE: 5,306</span>
-    </div>
-
-    <div id="chat-box" style="height: 55vh; overflow-y: auto;" class="p-4 space-y-4 flex flex-col bg-white border-b">
+    <div id="chat-screen">
+        <div class="bg-blue-800 text-white shadow-lg sticky top-0 z-50">
+            <div class="flex justify-between items-center px-4 py-3">
+                <h1 class="font-bold text-lg">🛡️ SafeChat Pro</h1>
+                <button onclick="exitChat()" class="bg-red-500 text-white px-4 py-1 rounded-full text-xs font-bold shadow-md active:bg-red-700">EXIT</button>
+            </div>
+            <div class="bg-blue-700 text-white flex justify-around py-2 font-bold text-[10px] uppercase border-t border-blue-500">
+                <div id="tab-public" class="border-b-2 border-white pb-1 cursor-pointer" onclick="switchTab('public')">1 on 1 Chat</div>
+                <div id="tab-ai" class="opacity-80 cursor-pointer" onclick="switchTab('ai')">Ai Chat</div>
+                <div class="opacity-80 cursor-pointer" onclick="alert('Rooms coming soon!')">Rooms</div>
+                <div>🔊</div>
+            </div>
         </div>
 
-    <div class="p-4 bg-white sticky bottom-0 shadow-lg border-t">
-        <div class="flex items-center gap-2 max-w-md mx-auto">
-            <label for="imageInput" class="cursor-pointer text-blue-600 p-2"><i class="fas fa-paperclip text-xl"></i></label>
-            <input type="file" id="imageInput" accept="image/*" class="hidden">
-            <input id="msg-input" type="text" placeholder="Type a message..." class="flex-1 border-2 rounded-full px-5 py-2 focus:outline-none focus:border-blue-500">
-            <button id="send-btn" class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg">
-                <i class="fas fa-paper-plane"></i>
-            </button>
+        <div class="bg-white flex justify-around py-3 border-b shadow-sm text-[9px] text-gray-500 font-bold sticky top-[84px] z-40">
+            <div class="flex flex-col items-center gap-1 text-blue-600"><i class="fas fa-user-friends text-lg"></i>ONLINE</div>
+            <div class="flex flex-col items-center gap-1"><i class="fas fa-venus-mars text-lg"></i>GENDER</div>
+            <div class="flex flex-col items-center gap-1 text-red-500 relative"><i class="fas fa-envelope text-lg"></i><span class="absolute -top-1 -right-1 bg-red-500 text-white px-1 rounded-full text-[7px]">1</span>INBOX</div>
+            <div class="flex flex-col items-center gap-1" onclick="location.reload()"><i class="fas fa-dice text-lg"></i>RANDOM</div>
         </div>
-    </div>
 
-    <div class="bg-gray-50 p-6 text-gray-700 border-t">
-        <div class="max-w-md mx-auto space-y-3 text-left">
-            <a href="#" class="block hover:underline text-blue-800">Chat Rooms</a>
-            <a href="#" class="block hover:underline text-blue-800 border-b pb-2">Privacy Policy</a>
-            <p class="text-xs pt-2 font-bold">© 2026 www.safechatpro.com</p>
+        <div class="bg-yellow-50 text-[10px] text-center py-1 font-bold text-yellow-700 border-b">
+             📢 <span id="display-user-meta">Connecting...</span>
+        </div>
+
+        <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col bg-white"></div>
+
+        <div class="p-4 bg-white border-t sticky bottom-0">
+            <div class="flex items-center gap-2 max-w-md mx-auto">
+                <label class="text-blue-600 p-2"><i class="fas fa-paperclip text-xl"></i></label>
+                <input id="msg-input" type="text" placeholder="Write a message..." class="flex-1 border-2 rounded-full px-5 py-2 outline-none focus:border-blue-500">
+                <button id="send-btn" class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg active:scale-90"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+
+        <div class="bg-gray-50 p-8 text-gray-700 border-t">
+            <div class="max-w-md mx-auto space-y-4">
+                <div class="flex flex-wrap gap-4 text-blue-800 text-xs font-bold uppercase underline">
+                    <a href="#">Privacy</a><a href="#">Terms</a><a href="#">FAQ</a><a href="#">Contact</a>
+                </div>
+                <p class="text-[9px] text-gray-400">© 2026 safechatpro.com • No data is stored on our servers.</p>
+            </div>
         </div>
     </div>
 
@@ -87,48 +124,87 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const chatBox = document.getElementById('chat-box');
-        const msgInput = document.getElementById('msg-input');
-        const sendBtn = document.getElementById('send-btn');
 
-        // Exit Logic
-        window.exitChat = () => {
-            if(confirm("Exit and delete chat history?")) {
-                sessionStorage.clear();
-                location.reload();
+        let activeMode = 'public'; // 'public' or 'ai'
+
+        // Age Check Logic
+        document.getElementById('age-confirm').onchange = (e) => {
+            document.getElementById('start-btn').classList.toggle('btn-disabled', !e.target.checked);
+        };
+
+        window.startChat = () => {
+            const name = document.getElementById('user-name').value.trim();
+            if(!name) return alert("Nickname choose karein!");
+            
+            document.getElementById('login-modal').style.display = 'none';
+            document.getElementById('chat-screen').style.display = 'flex';
+            document.getElementById('display-user-meta').textContent = `${name} | PUBLIC ROOM | ONLINE: 5,306`;
+            loadMessages();
+        };
+
+        window.switchTab = (mode) => {
+            activeMode = mode;
+            const meta = document.getElementById('display-user-meta');
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML = ""; // Clear for new mode
+            
+            if(mode === 'ai') {
+                document.getElementById('tab-ai').classList.add('border-b-2', 'border-white');
+                document.getElementById('tab-public').classList.remove('border-b-2', 'border-white');
+                meta.textContent = "PRIVATE AI CHAT | SafeBot is Online";
+                addMessage("SafeBot", "Hello! Main SafeBot hoon. Aap mujhse kuch bhi pooch sakte hain.", "ai-msg");
+            } else {
+                location.reload(); // Quick way to reset to public
             }
         };
 
-        // Send Message
+        window.exitChat = () => { if(confirm("Exit SafeChat? Sab delete ho jayega.")) location.reload(); };
+
+        const addMessage = (user, text, type) => {
+            const div = document.createElement('div');
+            div.className = `p-3 max-w-[85%] rounded-2xl text-sm shadow-sm ${type}`;
+            div.innerHTML = `<span class="text-[9px] block font-black opacity-60 uppercase">${user}</span>${text}`;
+            document.getElementById('chat-box').appendChild(div);
+            document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+        };
+
         const sendMessage = async () => {
-            const text = msgInput.value.trim();
-            if (text) {
+            const input = document.getElementById('msg-input');
+            const text = input.value.trim();
+            if(!text) return;
+
+            if(activeMode === 'public') {
                 await addDoc(collection(db, "messages"), {
                     text: text,
-                    createdAt: serverTimestamp(),
-                    userId: "user_" + Math.random().toString(36).substr(2, 9)
+                    user: document.getElementById('user-name').value,
+                    createdAt: serverTimestamp()
                 });
-                msgInput.value = "";
+            } else {
+                // AI Mode Logic
+                addMessage("You", text, "sent");
+                setTimeout(() => {
+                    const replies = ["Main samajh sakta hoon.", "Bahut achha sawal hai!", "Kya aap aur kuch jaanna chahte hain?", "Main ek AI hoon, aapki madad karke khushi hui."];
+                    addMessage("SafeBot", replies[Math.floor(Math.random()*replies.length)], "ai-msg");
+                }, 1000);
             }
+            input.value = "";
         };
 
-        sendBtn.onclick = sendMessage;
-        msgInput.onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
+        document.getElementById('send-btn').onclick = sendMessage;
+        document.getElementById('msg-input').onkeypress = (e) => e.key === 'Enter' && sendMessage();
 
-        // Load Messages
-        const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
-        onSnapshot(q, (snapshot) => {
-            chatBox.innerHTML = "";
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                const div = document.createElement('div');
-                div.className = `p-3 max-w-[80%] msg-animate received`; 
-                div.textContent = data.text;
-                chatBox.appendChild(div);
+        function loadMessages() {
+            if(activeMode !== 'public') return;
+            const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
+            onSnapshot(q, (snapshot) => {
+                document.getElementById('chat-box').innerHTML = "";
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const isMe = data.user === document.getElementById('user-name').value;
+                    addMessage(data.user, data.text, isMe ? "sent" : "received");
+                });
             });
-            chatBox.scrollTop = chatBox.scrollHeight;
-        });
-
+        }
     </script>
 </body>
 </html>
