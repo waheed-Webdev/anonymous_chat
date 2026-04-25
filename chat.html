@@ -281,7 +281,8 @@
         document.getElementById('msg-input').onkeypress = (e) => { if(e.key === 'Enter') send(); };
         window.onbeforeunload = () => { if(user.name) deleteDoc(doc(db, "online", user.name)); };
     </script>
-        <div id="policy-section" style="margin-top: 150px;" class="bg-gray-100 p-8 text-gray-700 text-[10px] border-t">
+        <div id="policy-section" style="padding-top: 150px;" class="bg-gray-100 p-8 text-gray-700 text-[10px] border-t">
+
 
         <div class="max-w-4xl mx-auto">
             <h2 class="text-sm font-bold mb-4 uppercase">About SafeChat Pro</h2>
