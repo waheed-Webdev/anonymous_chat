@@ -13,11 +13,13 @@
         #chat-box::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .msg-animate { animation: slideUp 0.2s ease-out; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .received { align-self: flex-start; background: #e2e8f0; color: #1e293b; border-radius: 15px 15px 15px 0; }
+        .sent { align-self: flex-end; background: #2563eb; color: white; border-radius: 15px 15px 0 15px; }
     </style>
 </head>
-<body id="main-body" class="bg-gray-100 font-sans">
+<body class="bg-gray-100 font-sans">
 
-    <div id="header-bg" class="bg-blue-800 text-white shadow-lg sticky top-0 z-50">
+    <div class="bg-blue-800 text-white shadow-lg sticky top-0 z-50">
         <div class="flex justify-between items-center px-4 py-3">
             <h1 class="font-bold text-lg flex items-center gap-2">🛡️ SafeChat Pro</h1>
             <button onclick="exitChat()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-full text-xs font-bold transition">EXIT</button>
@@ -25,15 +27,15 @@
         
         <div class="bg-blue-700 text-white flex justify-around py-2 font-bold text-[10px] uppercase tracking-wider border-t border-blue-500">
             <div class="cursor-pointer border-b-2 border-white pb-1">1 on 1 Chat</div>
-            <div class="cursor-pointer opacity-80">Rooms</div>
-            <div class="cursor-pointer opacity-80">Ai Chat</div>
+            <div class="cursor-pointer opacity-80" onclick="alert('Rooms coming soon!')">Rooms</div>
+            <div class="cursor-pointer opacity-80" onclick="alert('AI Chat coming soon!')">Ai Chat</div>
             <div class="cursor-pointer">🔊</div>
         </div>
     </div>
 
     <div class="bg-white flex justify-around py-3 border-b shadow-sm text-[9px] text-gray-500 font-bold sticky top-[84px] z-40">
         <div class="flex flex-col items-center gap-1 text-blue-600"><i class="fas fa-user-friends text-lg"></i>ONLINE</div>
-        <div class="flex flex-col items-center gap-1"><i class="fas fa-venus-mars text-lg"></i>GENDER</div>
+        <div class="flex flex-col items-center gap-1" onclick="alert('Gender Filter Active')"><i class="fas fa-venus-mars text-lg"></i>GENDER</div>
         <div class="flex flex-col items-center gap-1"><i class="fas fa-history text-lg"></i>HISTORY</div>
         <div class="flex flex-col items-center gap-1"><i class="fas fa-search text-lg"></i>SEARCH</div>
         <div class="flex flex-col items-center gap-1 text-red-500 relative">
@@ -41,47 +43,32 @@
             <span class="absolute -top-1 -right-1 bg-red-500 text-white px-1 rounded-full text-[7px]">2</span>INBOX
         </div>
         <div class="flex flex-col items-center gap-1"><i class="fas fa-heart text-lg"></i>FRIENDS</div>
-        <div class="flex flex-col items-center gap-1"><i class="fas fa-dice text-lg"></i>RANDOM</div>
+        <div class="flex flex-col items-center gap-1" onclick="location.reload()"><i class="fas fa-dice text-lg"></i>RANDOM</div>
     </div>
 
-    <div id="chat-status" class="bg-yellow-50 text-[10px] text-center py-1 font-bold text-yellow-700 border-b">
-        📢 You are in PUBLIC ROOM (Everyone can see) | <span class="text-blue-600">ONLINE: 5,306</span>
+    <div class="bg-yellow-50 text-[10px] text-center py-1 font-bold text-yellow-700 border-b">
+        📢 You are in PUBLIC ROOM | <span class="text-blue-600">ONLINE: 5,306</span>
     </div>
 
-    <div id="chat-box" style="height: 60vh; overflow-y: auto;" class="p-4 space-y-4 flex flex-col bg-white">
+    <div id="chat-box" style="height: 55vh; overflow-y: auto;" class="p-4 space-y-4 flex flex-col bg-white border-b">
         </div>
 
-    <div class="p-4 bg-white border-t sticky bottom-0 shadow-inner">
+    <div class="p-4 bg-white sticky bottom-0 shadow-lg border-t">
         <div class="flex items-center gap-2 max-w-md mx-auto">
             <label for="imageInput" class="cursor-pointer text-blue-600 p-2"><i class="fas fa-paperclip text-xl"></i></label>
             <input type="file" id="imageInput" accept="image/*" class="hidden">
             <input id="msg-input" type="text" placeholder="Type a message..." class="flex-1 border-2 rounded-full px-5 py-2 focus:outline-none focus:border-blue-500">
-            <button id="send-btn" class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700">
+            <button id="send-btn" class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>
     </div>
 
-    <div class="bg-gray-50 p-6 text-gray-700 border-t mt-4">
+    <div class="bg-gray-50 p-6 text-gray-700 border-t">
         <div class="max-w-md mx-auto space-y-3 text-left">
-            <a href="#" class="block hover:underline text-md text-blue-800">Chat Rooms</a>
-            <a href="#" class="block hover:underline text-md text-blue-800">Advertise With Us</a>
-            <a href="#" class="block hover:underline text-md text-blue-800">FAQ</a>
-            <a href="#" class="block hover:underline text-md text-blue-800 border-b pb-2">Contact</a>
-            
-            <a href="#" class="block hover:underline text-md text-blue-800">Safety</a>
-            <a href="#" class="block hover:underline text-md text-blue-800 border-b pb-2">Privacy Policy</a>
-            
-            <a href="#" class="block hover:underline text-md text-blue-800">Cookie Policy</a>
-            <a href="#" class="block hover:underline text-md text-blue-800 border-b pb-2">T.O.S</a>
-            
-            <p class="text-xs pt-4 font-bold">© 2026 www.safechatpro.com</p>
-            
-            <p class="text-[10px] text-gray-500 leading-relaxed pt-2">
-                We use cookies and other data collection technologies to provide the best experience for our customers. 
-                You may request that your data not be shared with third parties here: 
-                <a href="#" class="underline">Do Not Sell My Data</a>
-            </p>
+            <a href="#" class="block hover:underline text-blue-800">Chat Rooms</a>
+            <a href="#" class="block hover:underline text-blue-800 border-b pb-2">Privacy Policy</a>
+            <p class="text-xs pt-2 font-bold">© 2026 www.safechatpro.com</p>
         </div>
     </div>
 
@@ -89,7 +76,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // AAPKI IMPORTANT API KEYS (DON'T CHANGE)
         const firebaseConfig = {
             apiKey: "AIzaSyB4GU0Of1_MU5NLF1n1PT7xU11vt7yF7g",
             authDomain: "anonymous-chat-7d857.firebaseapp.com",
@@ -101,22 +87,48 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const chatBox = document.getElementById('chat-box');
+        const msgInput = document.getElementById('msg-input');
+        const sendBtn = document.getElementById('send-btn');
 
-        // Global Exit Function
-        window.exitChat = function() {
-            if(confirm("Exit SafeChat Pro? Your current session will be cleared.")) {
+        // Exit Logic
+        window.exitChat = () => {
+            if(confirm("Exit and delete chat history?")) {
                 sessionStorage.clear();
-                window.location.reload();
+                location.reload();
             }
         };
 
-        // Clear session on tab close
-        window.onbeforeunload = function() {
-            sessionStorage.clear();
+        // Send Message
+        const sendMessage = async () => {
+            const text = msgInput.value.trim();
+            if (text) {
+                await addDoc(collection(db, "messages"), {
+                    text: text,
+                    createdAt: serverTimestamp(),
+                    userId: "user_" + Math.random().toString(36).substr(2, 9)
+                });
+                msgInput.value = "";
+            }
         };
 
-        // Baaki ka chat logic (messages sending/receiving) yahan continue hoga...
-        // (Yeh part waisa hi kaam karega jaisa pehle tha)
+        sendBtn.onclick = sendMessage;
+        msgInput.onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
+
+        // Load Messages
+        const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
+        onSnapshot(q, (snapshot) => {
+            chatBox.innerHTML = "";
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const div = document.createElement('div');
+                div.className = `p-3 max-w-[80%] msg-animate received`; 
+                div.textContent = data.text;
+                chatBox.appendChild(div);
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
     </script>
 </body>
 </html>
