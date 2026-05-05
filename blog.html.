@@ -3,42 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Safe Chat - Articles & Insights</title>
+    <title>Safe Chat - Technical & Finance Blog</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; background: #f4f4f4; }
         header { background: #333; color: #fff; padding: 1rem; text-align: center; }
-        .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; }
+        .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .post-card { border-bottom: 1px solid #ddd; padding: 15px 0; }
+        .post-card:last-child { border-bottom: none; }
         .post-card h2 { margin: 0; color: #007bff; }
-        .post-card p { color: #555; }
-        .btn { display: inline-block; background: #007bff; color: #fff; padding: 10px 15px; text-decoration: none; border-radius: 5px; margin-top: 10px; }
+        .btn { display: inline-block; background: #007bff; color: #fff; padding: 8px 12px; text-decoration: none; border-radius: 5px; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Safe Chat - Blog Section</h1>
-    <p>Data Center Tech, Finance, and Privacy Insights</p>
+    <h1>Safe Chat Insights</h1>
+    <p>Data Center, Finance aur Privacy ki jankari</p>
 </header>
 
 <div class="container">
     <div class="post-card">
-        <h2>Data Center Cooling: PAC Unit Maintenance</h2>
-        <p>Jaaniye kaise Precision Air Conditioning (PAC) units data center ke temperature ko control karte hain aur unke common alarms ko kaise theek karein...</p>
-        <a href="article1.html" class="btn">Read More</a>
+        <h2>1. PAC Unit Maintenance Guide</h2>
+        <p>Data center cooling aur PAC units ke maintenance ke bare mein jaaniye...</p>
+        <a href="article1.html" class="btn">Poora Padhein</a>
     </div>
 
     <div class="post-card">
-        <h2>SIP Investment Guide 2026</h2>
-        <p>Agar aap har mahine ₹500 bachate hain, toh long term mein ye kitna paisa ban sakta hai? SIP shuru karne ka sahi tarika yahan dekhein...</p>
-        <a href="article2.html" class="btn">Read More</a>
+        <h2>2. SIP Investment Guide</h2>
+        <p>Choti bachat se bada fund kaise banayein? SIP ke fayde dekhein...</p>
+        <a href="article2.html" class="btn">Poora Padhein</a>
     </div>
 
     <div class="post-card">
-        <h2>Why Safe Chat? Privacy in 2026</h2>
-        <p>Internet par anonymous chatting kyun zaroori hai aur hum aapke data ko kaise secure rakhte hain...</p>
-        <a href="article3.html" class="btn">Read More</a>
+        <h2>3. Stock Market Strategy</h2>
+        <p>Naye investors ke liye best share market tips aur diversification...</p>
+        <a href="article3.html" class="btn">Poora Padhein</a>
     </div>
+
+    <div class="post-card">
+        <h2>4. UPS & Battery Care</h2>
+        <p>UPS aur Battery bank ko downtime se bachane ke liye technician tips...</p>
+        <a href="article4.html" class="btn">Poora Padhein</a>
+    </div>
+</div>
+
+<div style="text-align:center; margin-top:20px;">
+    <a href="privacy.html">Privacy Policy</a> | <a href="index.html">Back to Chat</a>
 </div>
 
 </body>
