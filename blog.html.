@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Chat - Articles & Insights</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; background: #f4f4f4; }
+        header { background: #333; color: #fff; padding: 1rem; text-align: center; }
+        .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; }
+        .post-card { border-bottom: 1px solid #ddd; padding: 15px 0; }
+        .post-card h2 { margin: 0; color: #007bff; }
+        .post-card p { color: #555; }
+        .btn { display: inline-block; background: #007bff; color: #fff; padding: 10px 15px; text-decoration: none; border-radius: 5px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Safe Chat - Blog Section</h1>
+    <p>Data Center Tech, Finance, and Privacy Insights</p>
+</header>
+
+<div class="container">
+    <div class="post-card">
+        <h2>Data Center Cooling: PAC Unit Maintenance</h2>
+        <p>Jaaniye kaise Precision Air Conditioning (PAC) units data center ke temperature ko control karte hain aur unke common alarms ko kaise theek karein...</p>
+        <a href="article1.html" class="btn">Read More</a>
+    </div>
+
+    <div class="post-card">
+        <h2>SIP Investment Guide 2026</h2>
+        <p>Agar aap har mahine ₹500 bachate hain, toh long term mein ye kitna paisa ban sakta hai? SIP shuru karne ka sahi tarika yahan dekhein...</p>
+        <a href="article2.html" class="btn">Read More</a>
+    </div>
+
+    <div class="post-card">
+        <h2>Why Safe Chat? Privacy in 2026</h2>
+        <p>Internet par anonymous chatting kyun zaroori hai aur hum aapke data ko kaise secure rakhte hain...</p>
+        <a href="article3.html" class="btn">Read More</a>
+    </div>
+</div>
+
+</body>
+</html>
